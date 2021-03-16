@@ -88,16 +88,48 @@
      ========================================================================== */
   
   #board{
-    font-size: 0em;
-    line-height: 0;
+    display:inline;
+    background-color:  #aaaaaa;
   }
+  
   .cell{
     width: 20px;
     height: 20px;
-    border: 0.5px solid black;
+    border: 1px solid black;
     background-color:  #aaaaaa;
-    display:inline-block;
-    font-size: 5px;
+    display:inline;
+    float:left;
+    font-size: 8px;
+  }
+  
+  /*
+  #x11y11{
+    background: green;
+  }
+  #x10y10{
+    background: yellow;
+  }
+  #x12y0{
+    background: blue;
+  }
+  #x12y12{
+    background: black;
+  }
+  */
+  #container{
+    width: 290px;
+    height: 310px;
+    margin: auto;
+    padding: auto;
+  }
+  .bodySnake{
+    background-color:  red;
+    border-radius: 50%;
+  }
+  
+  .food{
+    background-color:  blue;
+    border-radius: 50%;
   }
   
   /*
