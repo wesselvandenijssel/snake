@@ -123,9 +123,29 @@
     padding: auto;
   }
   .bodySnake{
-    background-color:  red;
-    border-radius: 50%;
+    background-color:  #aee041;
   }
+  
+  .bodyHead{
+    background-color:  rgba(0,0,0,0);
+    border: 1px solid black;
+    background-image: url(../img/snake.png);
+    background-size: contain;
+  }
+  
+  .bodyHeadDirection1{
+    transform: rotate(180deg);
+  }
+  .bodyHeadDirection2{
+    transform: rotate(0deg);
+  }
+  .bodyHeadDirection3{
+    transform: rotate(270deg);
+  }
+  .bodyHeadDirection4{
+    transform: rotate(-270deg);
+  }
+  
   
   .food{
     background-color:  blue;

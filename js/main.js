@@ -6,9 +6,24 @@ let direction = 0;
 let foodIsEaten = true;
 let snakePosition = { x: Math.floor(boardSize / 2), y: Math.floor(boardSize / 2) };
 let foodPosition = { x: 0, y: 0 };
+let out = 1;
+
+function time(){
+var secondsSpentElement = document.getElementById("seconds-spent");
+requestAnimationFrame(function updateTimeSpent(){
+    var timeNow = performance.now();
+    secondsSpentElement = round(timeNow/1000);
+    //requestAnimationFrame(updateTimeSpent);
+let timegame = document.getElementById("time").innerHTML = "Tijd: " + secondsSpentElement;
+
+});
+var performance = window.performance, round = Math.round;
+};
+
+
 
 let snakePositions = [];
-snakePositions.push("x"+snakePosition.x+"y"+snakePosition.y);
+snakePositions.push("x" + snakePosition.x + "y" + snakePosition.y);
 
 function drawBoard() {
     //drawBoard (maakt het speelveld dat is opgebouwd uit div elementen met een unieke id)
@@ -59,41 +74,50 @@ function updatesnakePosition() {
     }
 
     snakePositions.shift();
-    snakePositions.push("x"+snakePosition.x+"y"+snakePosition.y);
+    snakePositions.push("x" + snakePosition.x + "y" + snakePosition.y);
 
 }
 
 //resetGame
 
-function resetGame() {
+function resetGame(){
     //direction = [0,0]; //alternatief
     direction = 0;
     snakePosition = { x: Math.floor((boardSize - 1) / 2), y: Math.floor((boardSize - 1) / 2) };
 }
 
 function gameover(){
+    out = 2;
     document.getElementById("gameover").innerHTML = "Gameover";
     document.getElementById("reset").innerHTML = '<a href="JavaScript: location.reload(true);">Speel opnieuw!</a>';
     board.style.display = "none";
 }
+ //checken of slag zichzelf raakt = als positie van het hoofd hetzelfde is als een van de posities van het lijf
+function collisionCheck() {
+    if (snakePosition.x < 0 || snakePosition.y < 0 || snakePosition.x > boardSize - 1 || snakePosition.y > boardSize - 1) { gameover(); }
+    let snakePositionControle = "x" + snakePosition.x + "y" + snakePosition.y;
 
-//collisionBoarderCheck
-
-//function collisionCheck() {
-//    if (snakePosition.x < 0 || snakePosition.y < 0 || snakePosition.x > boardSize - 1 || snakePosition.y > boardSize - 1) { gameover() }
-//}
+    for (let i = 0; i < snakePositions.length - 1; i++) {
+        if (snakePositionControle == snakePositions[i]) {
+            console.log("botsing tegen eigen lijf!!!!");
+            gameover();
+        }
+    }
+}
 
 //drawSnake
 
 function drawSnake() {
     //let snakeHeadsnakePosition = "x" + snakePosition.x + "y" + snakePosition.y;
     //document.getElementById(snakeHeadsnakePosition).className += " bodySnake";
-    for(let i=0;i<snakePositions.length;i++)
-    {
+    for (let i = 0; i < snakePositions.length; i++) {
+        if (i == snakePositions.length - 1) {
+            document.getElementById(snakePositions[i]).className += " bodyHead";
+            document.getElementById(snakePositions[i]).className += " bodyHeadDirection" + direction;
+        }
         //console.log(snakePositions[i]);
         document.getElementById(snakePositions[i]).className += " bodySnake";
     }
-
 }
 
 //drawFood
@@ -113,65 +137,67 @@ function drawFood() {
     document.getElementById(foodPositionID).className += " food";
 }
 
-function snakeEatsFood()
-{  
-    if (snakePosition.x == foodPosition.x && snakePosition.y == foodPosition.y)
-    {
+function snakeEatsFood() {
+    if (snakePosition.x == foodPosition.x && snakePosition.y == foodPosition.y) {
         //console.log("Yummy!!!!!!");
-        foodIsEaten = true;       
-        snakePositions.push("x"+snakePosition.x+"y"+snakePosition.y);
+        foodIsEaten = true;
+        snakePositions.push("x" + snakePosition.x + "y" + snakePosition.y);
         //console.log(snakePositions);
     }
 }
 
-
-
 //gameLoop
-
+let timeCounter = 0;
 function gameLoop() {
-    if (snakePosition.x < 0 || snakePosition.y < 0 || snakePosition.x > boardSize - 1 || snakePosition.y > boardSize - 1) { gameover() }
-    else{
+    if (out == 1){
     updatesnakePosition();
-    //collisionCheck();
+    collisionCheck();
+    if (out == 1){
     clearBoard();
-    snakeEatsFood();
-    drawSnake();
     drawFood();
+    drawSnake();
+    snakeEatsFood();
+        timeCounter++;
+        var timeoutTime = 550 - snakePositions.length * 30 - timeCounter / 2;
+        if (timeoutTime < 100) {
+            timeoutTime = 100;
+        }
+        //console.log(timeoutTime);
+        setTimeout(gameLoop, timeoutTime);
+        document.getElementById("speed").innerHTML = "Snelheid: " + Math.round(timeoutTime/100);
+    time()
+    }}
+    else{
+        gameover()
     }
 }
 
-//start Game here......
+    drawBoard();
 
-drawBoard();
-//gameLoop();
+    setTimeout(gameLoop, 0);
+    
 
-setInterval(gameLoop, 500);
+    // keyboard controls
 
-//
-// TODO: werk met window.requestAnimationFrame i.p.v. setInterval
-//
+    window.addEventListener("keydown", function (event) {
 
-// keyboard controls
+        if (event.key == "ArrowUp") {
+            //direction = [0,-1]; //alternatief
+            direction = 1;
+        }
+        if (event.key == "ArrowDown") {
+            //direction = [0,1]; //alternatief
+            direction = 2;
+        }
+        if (event.key == "ArrowRight") {
+            //direction = [1,0]; //alternatief
+            direction = 3;
+        }
+        if (event.key == "ArrowLeft") {
+            //direction = [-1,0]; //alternatief
+            direction = 4;
+        }
 
-window.addEventListener("keydown", function (event) {
-
-    if (event.key == "ArrowUp") {
-        //direction = [0,-1]; //alternatief
-        direction = 1;
-    }
-    if (event.key == "ArrowDown") {
-        //direction = [0,1]; //alternatief
-        direction = 2;
-    }
-    if (event.key == "ArrowRight") {
-        //direction = [1,0]; //alternatief
-        direction = 3;
-    }
-    if (event.key == "ArrowLeft") {
-        //direction = [-1,0]; //alternatief
-        direction = 4;
-    }
-
-    // TODO: voeg WASD toe (voor de echte gamers onder ons....)
-    keyboardInput.innerHTML = "Score:" + snakePositions.length;
-}, true);
+        // TODO: voeg WASD toe (voor de echte gamers onder ons....)
+        keyboardInput.innerHTML = "Score:" + snakePositions.length;
+    }, true);
